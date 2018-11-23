@@ -10,17 +10,19 @@ export const CoinGridStyled = styled.div`
   margin-top: 40px;
 `;
 
-function getCoinsToDisplay(coinList, topSection) {
+function getCoinsToDisplay(coinList, topSection, favourites) {
   // don't want to display all 1000 images
-  return Object.keys(coinList).slice(0, topSection ? 10 : 100);
+  return topSection
+    ? favourites
+    : Object.keys(coinList).slice(0, topSection ? 10 : 100);
 }
 
 export default function({ topSection }) {
   return (
     <AppContext.Consumer>
-      {({ coinList }) => (
+      {({ coinList, favourites }) => (
         <CoinGridStyled>
-          {getCoinsToDisplay(coinList, topSection).map(coinKey => (
+          {getCoinsToDisplay(coinList, topSection, favourites).map(coinKey => (
             <CoinTile topSection={topSection} coinKey={coinKey} />
           ))}
         </CoinGridStyled>
