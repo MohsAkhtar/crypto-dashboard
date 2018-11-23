@@ -20,9 +20,10 @@ export class AppProvider extends React.Component {
     this.fetchCoins();
   };
 
+  // fetches coin data from crypto compare api
   fetchCoins = async () => {
-    let coinList = await cryptocompare.coinList();
-    console.log(coinList);
+    let coinList = (await cryptocompare.coinList()).Data;
+    this.setState({ coinList });
   };
 
   // confirming favourites redirects to dashboard
