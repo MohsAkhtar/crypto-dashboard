@@ -17,6 +17,7 @@ export class AppProvider extends React.Component {
       setPage: this.setPage,
       addCoin: this.addCoin,
       removeCoin: this.removeCoin,
+      isInFavourites: this.isInFavourites,
       confirmFavourites: this.confirmFavourites
     };
   }
@@ -36,6 +37,9 @@ export class AppProvider extends React.Component {
     // _.pull is lodash command to pull a value out of the array and then return new array with value removed
     this.setState({ favourites: _.pull(favourites, key) });
   };
+
+  // check if value is already in favourites
+  isInFavourites = key => _.includes(this.state.favourites, key);
 
   // want coin api to load on mount
   componentDidMount = () => {
