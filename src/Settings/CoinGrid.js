@@ -23,7 +23,7 @@ export default function({ topSection }) {
       {({ coinList, favourites }) => (
         <CoinGridStyled>
           {getCoinsToDisplay(coinList, topSection, favourites).map(coinKey => (
-            <CoinTile topSection={topSection} coinKey={coinKey} />
+            <CoinTile topSection={topSection} coinKey={coinKey} key={coinKey} />
           ))}
         </CoinGridStyled>
       )}
