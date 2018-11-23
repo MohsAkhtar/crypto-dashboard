@@ -61,7 +61,7 @@ export class AppProvider extends React.Component {
     localStorage.setItem(
       'cryptoDashboard',
       JSON.stringify({
-        test: 'hello'
+        favourites: this.state.favourites
       })
     );
   };
@@ -75,7 +75,9 @@ export class AppProvider extends React.Component {
     if (!cryptoDashboardData) {
       return { page: 'settings', firstVisit: true };
     }
-    return {};
+
+    let { favourites } = cryptoDashboardData;
+    return { favourites };
   }
 
   setPage = page => this.setState({ page });
