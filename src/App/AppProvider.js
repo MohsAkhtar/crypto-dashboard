@@ -8,8 +8,13 @@ export class AppProvider extends React.Component {
     this.state = {
       page: 'dashboard',
       ...this.savedSettings(),
-      setPage: this.setPage
+      setPage: this.setPage,
+      confirmFavourites: this.confirmFavourites
     };
+  }
+
+  confirmFavourites() {
+    console.log('hello');
   }
 
   // Check if user has used site before by looking at ls
