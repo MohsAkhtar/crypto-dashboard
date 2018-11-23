@@ -18,6 +18,7 @@ export class AppProvider extends React.Component {
       addCoin: this.addCoin,
       removeCoin: this.removeCoin,
       isInFavourites: this.isInFavourites,
+      setFilteredCoins: this.setFilteredCoins,
       confirmFavourites: this.confirmFavourites
     };
   }
@@ -81,6 +82,9 @@ export class AppProvider extends React.Component {
   }
 
   setPage = page => this.setState({ page });
+
+  // filter coins with search bar
+  setFilteredCoins = filteredCoins => this.setState({ filteredCoins });
 
   render() {
     return (
