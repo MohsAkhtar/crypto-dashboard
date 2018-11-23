@@ -13,9 +13,19 @@ export class AppProvider extends React.Component {
     };
   }
 
-  confirmFavourites() {
-    console.log('hello');
-  }
+  // confirming favourites redirects to dashboard
+  confirmFavourites = () => {
+    this.setState({
+      firstVisit: false,
+      page: 'dashboard'
+    });
+    localStorage.setItem(
+      'cryptoDashboard',
+      JSON.stringify({
+        test: 'hello'
+      })
+    );
+  };
 
   // Check if user has used site before by looking at ls
   savedSettings() {
