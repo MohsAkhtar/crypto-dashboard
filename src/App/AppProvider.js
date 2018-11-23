@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 
 const cryptocompare = require('cryptocompare');
 
@@ -15,16 +16,25 @@ export class AppProvider extends React.Component {
       ...this.savedSettings(),
       setPage: this.setPage,
       addCoin: this.addCoin,
+      removeCoin: this.removeCoin,
       confirmFavourites: this.confirmFavourites
     };
   }
 
+  // adds coin to favourites
   addCoin = key => {
     let favourites = [...this.state.favourites];
     if (favourites.length < MAX_FAVOURITES) {
       favourites.push(key);
       this.setState({ favourites });
     }
+  };
+
+  // remove coin from favourites
+  removeCoin = key => {
+    let favourites = [...this.state.favourites];
+    // _.pull is lodash command to pull a value out of the array and then return new array with value removed
+    this.setState({ favourites: _.pull(favourites, key) });
   };
 
   // want coin api to load on mount
