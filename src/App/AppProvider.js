@@ -1,5 +1,7 @@
 import React from 'react';
 
+const cryptocompare = require('cryptocompare');
+
 export const AppContext = React.createContext();
 
 export class AppProvider extends React.Component {
@@ -12,6 +14,16 @@ export class AppProvider extends React.Component {
       confirmFavourites: this.confirmFavourites
     };
   }
+
+  // want coin api to load on mount
+  componentDidMount = () => {
+    this.fetchCoins();
+  };
+
+  fetchCoins = async () => {
+    let coinList = await cryptocompare.coinList();
+    console.log(coinList);
+  };
 
   // confirming favourites redirects to dashboard
   confirmFavourites = () => {
