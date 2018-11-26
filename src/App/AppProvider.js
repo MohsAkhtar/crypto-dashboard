@@ -45,6 +45,33 @@ export class AppProvider extends React.Component {
   // want coin api to load on mount
   componentDidMount = () => {
     this.fetchCoins();
+    this.fetchPrices();
+  };
+
+  // fetch prices for dashboard
+  fetchPrices = async () => {
+    // if user is visiting first time we don't have coin prices to fetch yet
+    if (this.state.firstVisit) {
+      return;
+    }
+    let prices = await this.prices();
+    this.setState({ prices });
+  };
+
+  prices = async () => {
+    let returnData = [];
+    for (let i = 0; i < this.state.favourites.length; i++) {
+      try {
+        let priceData = await cryptocompare.priceFull(
+          this.state.favourites[i],
+          'USD'
+        );
+        returnData.push(priceData);
+      } catch (e) {
+        console.warn('Fetch Price error: ', e);
+      }
+    }
+    return returnData;
   };
 
   // fetches coin data from crypto compare api
@@ -55,10 +82,15 @@ export class AppProvider extends React.Component {
 
   // confirming favourites redirects to dashboard
   confirmFavourites = () => {
-    this.setState({
-      firstVisit: false,
-      page: 'dashboard'
-    });
+    this.setState(
+      {
+        firstVisit: false,
+        page: 'dashboard'
+      },
+      () => {
+        this.fetchPrices();
+      }
+    );
     localStorage.setItem(
       'cryptoDashboard',
       JSON.stringify({
