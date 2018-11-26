@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import { CoinSymbol } from '../Settings/CoinHeaderGrid';
 
 const cryptocompare = require('cryptocompare');
 
@@ -19,6 +20,7 @@ export class AppProvider extends React.Component {
       removeCoin: this.removeCoin,
       isInFavourites: this.isInFavourites,
       setFilteredCoins: this.setFilteredCoins,
+      setCurrentFavourite: this.setCurrentFavourite,
       confirmFavourites: this.confirmFavourites
     };
   }
@@ -82,10 +84,12 @@ export class AppProvider extends React.Component {
 
   // confirming favourites redirects to dashboard
   confirmFavourites = () => {
+    let currentFavourite = this.state.favourites[0];
     this.setState(
       {
         firstVisit: false,
-        page: 'dashboard'
+        page: 'dashboard',
+        currentFavourite
       },
       () => {
         this.fetchPrices();
@@ -94,7 +98,22 @@ export class AppProvider extends React.Component {
     localStorage.setItem(
       'cryptoDashboard',
       JSON.stringify({
-        favourites: this.state.favourites
+        favourites: this.state.favourites,
+        currentFavourite
+      })
+    );
+  };
+
+  // sets favourite coin on dashboard
+  setCurrentFavourite = coinSymbol => {
+    this.setState({
+      currentFavourite: coinSymbol
+    });
+    localStorage.setItem(
+      'cryptoDashboard',
+      JSON.stringify({
+        ...JSON.parse(localStorage.getItem('cryptoDashboard')),
+        currentFavourite: coinSymbol
       })
     );
   };
@@ -109,8 +128,8 @@ export class AppProvider extends React.Component {
       return { page: 'settings', firstVisit: true };
     }
 
-    let { favourites } = cryptoDashboardData;
-    return { favourites };
+    let { favourites, currentFavourite } = cryptoDashboardData;
+    return { favourites, currentFavourite };
   }
 
   setPage = page => this.setState({ page });

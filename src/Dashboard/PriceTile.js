@@ -1,8 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { SelectableTile } from '../Shared/Tile';
-import { fontSize3, fontSizeBig } from '../Shared/Styles';
+import { fontSize3, fontSizeBig, greenBoxShadow } from '../Shared/Styles';
 import { CoinHeaderGridStyled } from '../Settings/CoinHeaderGrid';
+import { AppContext } from '../App/AppProvider';
 
 // justify content to right
 const JustifyRight = styled.div`
@@ -55,11 +56,26 @@ const PriceTileStyled = styled(SelectableTile)`
       grid-gap: 5px;
       grid-template-columns: repeat(3, 1fr);
     `}
+
+  ${props =>
+    props.currentFavourite &&
+    css`
+      ${greenBoxShadow}
+      pointer-events: none;
+    `}
 `;
 
-function PriceTile({ coinSymbol, data }) {
+function PriceTile({
+  coinSymbol,
+  data,
+  currentFavourite,
+  setCurrentFavourite
+}) {
   return (
-    <PriceTileStyled>
+    <PriceTileStyled
+      onClick={setCurrentFavourite}
+      currentFavourite={currentFavourite}
+    >
       <CoinHeaderGridStyled>
         <div> {coinSymbol} </div>
         <ChangePercent data={data} />
@@ -69,9 +85,18 @@ function PriceTile({ coinSymbol, data }) {
   );
 }
 
-function PriceTileCompact({ coinSymbol, data }) {
+function PriceTileCompact({
+  coinSymbol,
+  data,
+  currentFavourite,
+  setCurrentFavourite
+}) {
   return (
-    <PriceTileStyled compact>
+    <PriceTileStyled
+      onClick={setCurrentFavourite}
+      compact
+      currentFavourite={currentFavourite}
+    >
       <JustifyLeft> {coinSymbol} </JustifyLeft>
       <ChangePercent data={data} />
       <JustifyRight>${numberFormat(data.PRICE)}</JustifyRight>
@@ -86,5 +111,16 @@ export default function({ price, index }) {
   // we want to display the tiles differently depending what row it is on
   let TileClass = index < 5 ? PriceTile : PriceTileCompact;
 
-  return <TileClass coinSymbol={coinSymbol} data={data} />;
+  return (
+    <AppContext.Consumer>
+      {({ currentFavourite, setCurrentFavourite }) => (
+        <TileClass
+          coinSymbol={coinSymbol}
+          data={data}
+          currentFavourite={currentFavourite === coinSymbol}
+          setCurrentFavourite={() => setCurrentFavourite(coinSymbol)}
+        />
+      )}
+    </AppContext.Consumer>
+  );
 }
