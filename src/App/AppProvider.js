@@ -1,12 +1,14 @@
 import React from 'react';
 import _ from 'lodash';
 import { CoinSymbol } from '../Settings/CoinHeaderGrid';
+import moment from 'moment';
 
 const cryptocompare = require('cryptocompare');
 
 export const AppContext = React.createContext();
 
 const MAX_FAVOURITES = 10;
+const TIME_UNITS = 10;
 
 export class AppProvider extends React.Component {
   constructor(props) {
@@ -48,6 +50,7 @@ export class AppProvider extends React.Component {
   componentDidMount = () => {
     this.fetchCoins();
     this.fetchPrices();
+    this.fetchHistorical();
   };
 
   // fetch prices for dashboard
@@ -60,6 +63,43 @@ export class AppProvider extends React.Component {
     this.setState({ prices });
   };
 
+  // fetch data for high chart
+  fetchHistorical = async () => {
+    if (this.state.firstVisit) {
+      return;
+    }
+    let results = await this.historical();
+    let historical = [
+      {
+        name: this.state.currentFavourite,
+        data: results.map((ticker, index) => [
+          moment()
+            .subtract({ months: TIME_UNITS - index })
+            .valueOf(),
+          ticker.USD
+        ])
+      }
+    ];
+    this.setState({ historical });
+  };
+
+  historical = () => {
+    let promises = [];
+    for (let units = TIME_UNITS; units > 0; units--) {
+      promises.push(
+        cryptocompare.priceHistorical(
+          this.state.currentFavourite,
+          ['USD'],
+          moment()
+            .subtract({ months: units })
+            .toDate()
+        )
+      );
+    }
+    return Promise.all(promises);
+  };
+
+  // prices function for fetchPrices function
   prices = async () => {
     let returnData = [];
     for (let i = 0; i < this.state.favourites.length; i++) {
