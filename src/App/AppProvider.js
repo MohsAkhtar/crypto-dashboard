@@ -129,10 +129,13 @@ export class AppProvider extends React.Component {
       {
         firstVisit: false,
         page: 'dashboard',
-        currentFavourite
+        currentFavourite,
+        prices: null,
+        historical: null
       },
       () => {
         this.fetchPrices();
+        this.fetchHistorical();
       }
     );
     localStorage.setItem(
@@ -146,9 +149,13 @@ export class AppProvider extends React.Component {
 
   // sets favourite coin on dashboard
   setCurrentFavourite = coinSymbol => {
-    this.setState({
-      currentFavourite: coinSymbol
-    });
+    this.setState(
+      {
+        currentFavourite: coinSymbol,
+        historical: null
+      },
+      this.fetchHistorical
+    );
     localStorage.setItem(
       'cryptoDashboard',
       JSON.stringify({
